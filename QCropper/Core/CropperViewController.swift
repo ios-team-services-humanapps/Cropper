@@ -19,7 +19,7 @@ enum CropBoxEdge: Int {
 }
 
 public protocol CropperViewControllerDelegate: AnyObject {
-    func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?)
+    func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?, wasImageCropped: Bool)
     func cropperDidCancel(_ cropper: CropperViewController)
 }
 
@@ -33,6 +33,8 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
     public let originalImage: UIImage
     var initialState: CropperState?
     var isCircular: Bool
+    
+    private var wasImageCropped: Bool = false
 
     public init(originalImage: UIImage, initialState: CropperState? = nil, isCircular: Bool = false) {
         self.originalImage = originalImage
@@ -342,7 +344,7 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
 
     @objc
     func confirmButtonPressed(_: UIButton) {
-        delegate?.cropperDidConfirm(self, state: saveState())
+        delegate?.cropperDidConfirm(self, state: saveState(), wasImageCropped: wasImageCropped)
     }
 
     @objc
@@ -485,6 +487,7 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
     func updateButtons() {
         if let toolbar = self.toolbar as? Toolbar {
             toolbar.resetButton.isHidden = isCurrentlyInDefalutState
+            wasImageCropped = !isCurrentlyInDefalutState
             if initialState != nil {
                 toolbar.doneButton.isEnabled = !isCurrentlyInInitialState
             } else {

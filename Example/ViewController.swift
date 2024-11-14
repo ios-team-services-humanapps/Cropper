@@ -81,14 +81,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 }
 
 extension ViewController: CropperViewControllerDelegate {
-    func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?) {
+    func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?, wasImageCropped: Bool) {
         cropper.dismiss(animated: true, completion: nil)
 
+        print(wasImageCropped)
+        
         if let state = state,
             let image = cropper.originalImage.cropped(withCropperState: state) {
             cropperState = state
             imageView.image = image
-            print(cropper.isCurrentlyInInitialState)
+//            print(cropper.isCurrentlyInInitialState)
             print(image)
         }
     }
